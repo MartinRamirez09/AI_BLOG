@@ -25,15 +25,22 @@ header p {
   color: #9ca3af;
 }
 
+/* ============================
+      👇 NUEVO GRID LAYOUT
+============================ */
 main {
-  max-width: 900px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  width: 95%;
+  max-width: 1300px;
   margin: 0 auto 2rem auto;
   padding: 0 1rem 2rem 1rem;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-  gap: 1.5rem;
 }
 
+/* ================================
+    Tarjeta general
+================================*/
 .card {
   background: #020617;
   border-radius: 0.75rem;
@@ -47,6 +54,16 @@ main {
   margin-bottom: 0.75rem;
 }
 
+/* ==================================
+      👇 HACER QUE LOS POSTS
+      OCUPE TODA LA FILA COMPLETA
+================================== */
+.card-posts {
+  grid-column: span 3;
+  width: 100%;
+}
+
+/* Inputs */
 label {
   display: block;
   font-size: 0.9rem;
@@ -100,38 +117,42 @@ button:hover {
   color: #fbbf24;
 }
 
-/* Posts */
+/* ==================================
+          Posts mejorados
+================================== */
 #posts-container {
-  max-height: 70vh;
-  overflow-y: auto;
+  max-height: none;      /* sin scroll pequeño */
+  padding: 20px;
 }
 
 .post {
   background: #121826;
   border-radius: 12px;
-  padding: 14px 16px;
-  margin-bottom: 14px;
+  padding: 16px 18px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #1f2937;
 }
 
 .post-title {
-  font-weight: 600;
-  font-size: 1rem;
-  margin-bottom: 4px;
+  font-weight: 700;
+  font-size: 1.2rem;
+  margin-bottom: 8px;
+  color: #e5e7eb;
 }
 
 .post-meta {
   font-size: 0.8rem;
   opacity: 0.7;
-  margin-bottom: 8px;
+  margin-bottom: 12px;
 }
 
 .post-body {
-  font-size: 0.9rem;
-  line-height: 1.5;
-  white-space: pre-wrap; /* importantísimo para respetar \n */
+  font-size: 1rem;
+  line-height: 1.6;
+  white-space: pre-line;  /* RESPETA \n */
 }
 
-
+/* Footer */
 footer {
   text-align: center;
   padding: 1rem;
