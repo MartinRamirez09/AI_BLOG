@@ -101,28 +101,36 @@ button:hover {
 }
 
 /* Posts */
-#posts-container .post {
-  border-top: 1px solid #1f2937;
-  padding-top: 0.75rem;
-  margin-top: 0.75rem;
+#posts-container {
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+.post {
+  background: #121826;
+  border-radius: 12px;
+  padding: 14px 16px;
+  margin-bottom: 14px;
 }
 
 .post-title {
   font-weight: 600;
-  margin-bottom: 0.25rem;
+  font-size: 1rem;
+  margin-bottom: 4px;
 }
 
 .post-meta {
-  font-size: 0.75rem;
-  color: #6b7280;
-  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+  opacity: 0.7;
+  margin-bottom: 8px;
 }
 
 .post-body {
   font-size: 0.9rem;
   line-height: 1.5;
-  white-space: pre-wrap;
+  white-space: pre-wrap; /* importantísimo para respetar \n */
 }
+
 
 footer {
   text-align: center;
