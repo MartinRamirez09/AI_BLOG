@@ -19,6 +19,7 @@ app = FastAPI(
 # CORS – Orígenes permitidos
 origins = [
     "https://martinramirez09.github.io",  # Sin barra al final
+    "https://martinramirez09.github.io/AI_BLOG",
     "http://localhost:3000",
     "http://localhost:8000",
 ]
