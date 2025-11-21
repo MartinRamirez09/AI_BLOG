@@ -16,10 +16,10 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS – pon aquí tu URL de GitHub Pages
+# CORS – aquí van los ORÍGENES que pueden llamar a tu API desde el navegador
 origins = [
-    "https://github.com/MartinRamirez09",
-    "https://github.com/MartinRamirez09/AI_BLOG.git",
+    # Frontend en producción (GitHub Pages)
+    "https://martinramirez09.github.io",
 ]
 
 app.add_middleware(
@@ -30,10 +30,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-
 # --- Auth ---
 
-@app.post("register", response_model=schemas.AuthorOut, status_code=status.HTTP_201_CREATED)
+@app.post("/register", response_model=schemas.AuthorOut, status_code=status.HTTP_201_CREATED)
 def register(author_in: schemas.AuthorCreate, db: Session = Depends(get_db)):
     existing = auth.get_author_by_email(db, author_in.email)
     if existing:
@@ -49,7 +48,7 @@ def register(author_in: schemas.AuthorCreate, db: Session = Depends(get_db)):
     return author
 
 
-@app.post("token", response_model=schemas.Token)
+@app.post("/token", response_model=schemas.Token)
 def login_for_access_token(
     form_data: auth.OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
@@ -68,7 +67,7 @@ def login_for_access_token(
 
 # --- AI & Posts ---
 
-@app.post("generate-post", response_model=schemas.PostPublic)
+@app.post("/generate-post", response_model=schemas.PostPublic)
 async def generate_post(
     post_in: schemas.PostCreate,
     db: Session = Depends(get_db),
@@ -93,7 +92,7 @@ async def generate_post(
     return post
 
 
-@app.get("posts", response_model=List[schemas.PostPublic])
+@app.get("/posts", response_model=List[schemas.PostPublic])
 def list_posts(db: Session = Depends(get_db)):
     posts = db.query(models.Post).order_by(models.Post.created_at.desc()).all()
     return posts
