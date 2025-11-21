@@ -16,10 +16,11 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# CORS – aquí van los ORÍGENES que pueden llamar a tu API desde el navegador
+# CORS – Orígenes permitidos
 origins = [
-    # Frontend en producción (GitHub Pages)
-    "https://martinramirez09.github.io/AI_BLOG/",
+    "https://martinramirez09.github.io",  # Sin barra al final
+    "http://localhost:3000",
+    "http://localhost:8000",
 ]
 
 app.add_middleware(
@@ -29,6 +30,16 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# --- Health Check ---
+
+@app.get("/health")
+def health_check():
+    return {"status": "ok"}
+
+@app.get("/")
+def root():
+    return {"message": "AI-Blog API is running"}
 
 # --- Auth ---
 
