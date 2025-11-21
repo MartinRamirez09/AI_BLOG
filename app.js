@@ -180,26 +180,69 @@ async function loadPosts() {
     }
 
     postsContainer.innerHTML = "";
+
     posts.forEach((post) => {
       const div = document.createElement("div");
       div.className = "post";
 
+      // --- Título ---
       const title = document.createElement("div");
       title.className = "post-title";
-      title.textContent = post.title;
+      title.textContent = post.title || "Artículo generado";
 
+      // --- Meta ---
       const meta = document.createElement("div");
       meta.className = "post-meta";
       const date = new Date(post.created_at);
       meta.textContent = `Publicado: ${date.toLocaleString()} · Autor ID: ${post.author_id}`;
 
+      // --- Body ---
+      let bodyText = post.body || "";
+
+      // 1. Si viene con fences ```json o ```... quitarlos
+      if (bodyText.startsWith("```")) {
+        const lines = bodyText.split("\n");
+
+        // quitar primera línea ```
+        if (lines[0].startsWith("```")) lines.shift();
+
+        // quitar última línea ```
+        if (lines.length && lines[lines.length - 1].startsWith("```")) {
+          lines.pop();
+        }
+
+        bodyText = lines.join("\n");
+      }
+
+      // 2. Intentar parsear JSON si viniera JSON crudo
+      try {
+        const parsed = JSON.parse(bodyText);
+        if (parsed.body) {
+          bodyText = parsed.body; // usamos solo el body real
+        }
+      } catch {
+        // si no es JSON, lo dejamos igual
+      }
+
+      // 3. Convertir saltos de línea en párrafos
       const body = document.createElement("div");
       body.className = "post-body";
-      body.textContent = post.body;
+
+      const paragraphs = bodyText
+        .split(/\n\s*\n/) // separa por saltos dobles
+        .map((p) => p.trim())
+        .filter((p) => p.length > 0);
+
+      paragraphs.forEach((pText) => {
+        const p = document.createElement("p");
+        p.textContent = pText;
+        body.appendChild(p);
+      });
 
       div.appendChild(title);
       div.appendChild(meta);
       div.appendChild(body);
+
       postsContainer.appendChild(div);
     });
   } catch (err) {
