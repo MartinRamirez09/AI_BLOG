@@ -19,7 +19,7 @@ app = FastAPI(
 # CORS – aquí van los ORÍGENES que pueden llamar a tu API desde el navegador
 origins = [
     # Frontend en producción (GitHub Pages)
-    "https://martinramirez09.github.io",
+    "https://martinramirez09.github.io/AI_BLOG/",
 ]
 
 app.add_middleware(
