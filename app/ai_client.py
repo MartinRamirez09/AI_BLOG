@@ -2,6 +2,7 @@
 import os
 import json
 import google.generativeai as genai
+import markdown  # <-- NUEVO: Para limpiar y formatear el texto
 
 GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
@@ -22,44 +23,44 @@ async def generate_blog_post(prompt: str) -> dict:
       "seo_description": "..."
     }
     """
+
     model = genai.GenerativeModel(MODEL_NAME)
 
     full_prompt = f"""
     Eres un generador de artículos de blog.
 
     A partir del siguiente prompt de usuario:
-    \"\"\"{prompt}\"\"\"
+    \"\"\"{prompt}\"\"\"\
 
     Genera un artículo de blog en español con el siguiente formato JSON ESTRICTO.
     IMPORTANTE:
     - Devuelve ÚNICAMENTE el JSON, sin explicaciones, sin texto antes ni después.
     - El JSON debe tener exactamente estas 3 claves: title, body, seo_description.
-
-    Ejemplo de formato esperado (NO lo devuelvas tal cual, solo respeta la estructura):
-
-    {{
-      "title": "Título atractivo para el blog",
-      "body": "Cuerpo completo del artículo, con varios párrafos.",
-      "seo_description": "Descripción corta optimizada para SEO (máx 150 caracteres)."
-    }}
     """
 
     response = model.generate_content(full_prompt)
 
     text = response.text.strip()
 
-    # Intentar parsear JSON directamente
     try:
         data = json.loads(text)
+
+        # Convertir Markdown -> HTML limpio y sin escapes raros
+        clean_title = markdown.markdown(data.get("title", "Artículo generado"))
+        clean_body = markdown.markdown(data.get("body", ""))
+        clean_seo = markdown.markdown(data.get("seo_description", ""))
+
         return {
-            "title": data.get("title", "Artículo generado"),
-            "body": data.get("body", text),
-            "seo_description": data.get("seo_description", ""),
+            "title": clean_title,
+            "body": clean_body,
+            "seo_description": clean_seo,
         }
+
     except json.JSONDecodeError:
-        # Fallback: si no viene JSON, usamos todo el texto como body
+        # Si Gemini no devuelve JSON, al menos limpiamos el texto
+        clean_body = markdown.markdown(text)
         return {
             "title": "Artículo generado",
-            "body": text,
+            "body": clean_body,
             "seo_description": "",
         }
