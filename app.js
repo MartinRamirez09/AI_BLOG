@@ -1,8 +1,7 @@
 // app.js
-// URL de tu backend en Render
+// CAMBIA esto si tu backend tiene otra URL
 const API_BASE_URL = "https://ai-blog-ogij.onrender.com";
 
-// --- Referencias del DOM ---
 const regEmail = document.getElementById("reg-email");
 const regPassword = document.getElementById("reg-password");
 const regMsg = document.getElementById("reg-msg");
@@ -19,20 +18,16 @@ const generateSection = document.getElementById("generate-section");
 
 const postsContainer = document.getElementById("posts-container");
 
-// --- Eventos ---
 document.getElementById("btn-register").addEventListener("click", register);
 document.getElementById("btn-login").addEventListener("click", login);
 document.getElementById("btn-generate").addEventListener("click", generatePost);
 logoutBtn.addEventListener("click", logout);
 
-// --- Estado ---
 let token = localStorage.getItem("access_token") || null;
 updateUI();
 loadPosts();
 
-// ---------------------------------------------------------------------
-// Helpers de UI
-// ---------------------------------------------------------------------
+// --- UI helpers ---
 function updateUI() {
   if (token) {
     generateSection.style.display = "block";
@@ -44,9 +39,7 @@ function updateUI() {
   }
 }
 
-// ---------------------------------------------------------------------
-// Auth
-// ---------------------------------------------------------------------
+// --- Auth ---
 async function register() {
   regMsg.textContent = "";
 
@@ -126,9 +119,7 @@ function logout() {
   updateUI();
 }
 
-// ---------------------------------------------------------------------
-// Generar post (endpoint protegido)
-// ---------------------------------------------------------------------
+// --- Generate post ---
 async function generatePost() {
   genMsg.textContent = "";
 
@@ -170,42 +161,7 @@ async function generatePost() {
   }
 }
 
-// ---------------------------------------------------------------------
-// Limpieza de contenido viejo (cuando viene como JSON en un string)
-// ---------------------------------------------------------------------
-function extractJsonFromBody(rawBody) {
-  if (!rawBody) return null;
-
-  // Quitamos posibles ```json ``` al inicio/fin
-  let text = rawBody.trim();
-  if (text.startsWith("```")) {
-    const firstBrace = text.indexOf("{");
-    const lastBrace = text.lastIndexOf("}");
-    if (firstBrace !== -1 && lastBrace !== -1) {
-      text = text.slice(firstBrace, lastBrace + 1);
-    }
-  }
-
-  // Intentar encontrar un bloque JSON dentro del texto
-  const firstBrace = text.indexOf("{");
-  const lastBrace = text.lastIndexOf("}");
-  if (firstBrace === -1 || lastBrace === -1 || lastBrace <= firstBrace) {
-    return null;
-  }
-
-  const jsonCandidate = text.slice(firstBrace, lastBrace + 1);
-
-  try {
-    const obj = JSON.parse(jsonCandidate);
-    return obj;
-  } catch (e) {
-    return null;
-  }
-}
-
-// ---------------------------------------------------------------------
-// Cargar posts públicos
-// ---------------------------------------------------------------------
+// --- Posts públicos (limpios y bonitos) ---
 async function loadPosts() {
   postsContainer.innerHTML = "<p>Cargando artículos...</p>";
 
@@ -226,42 +182,40 @@ async function loadPosts() {
     postsContainer.innerHTML = "";
 
     posts.forEach((post) => {
-      let title = post.title || "Artículo";
-      let bodyText = post.body || "";
-
-      // Si el body parece contener JSON embebido (viejos registros),
-      // intentamos extraer "title" y "body" del JSON:
-      const embedded = extractJsonFromBody(bodyText);
-      if (embedded) {
-        if (embedded.title && title === "Artículo generado") {
-          // Si el título guardado es genérico, usamos el del JSON
-          title = embedded.title;
-        }
-        if (embedded.body) {
-          bodyText = embedded.body;
-        }
-      }
-
-      // Crear elementos
       const div = document.createElement("div");
       div.className = "post";
 
-      const titleEl = document.createElement("div");
-      titleEl.className = "post-title";
-      titleEl.textContent = title;
+      const title = document.createElement("h3");
+      title.className = "post-title";
+      title.textContent = post.title;
 
       const meta = document.createElement("div");
       meta.className = "post-meta";
       const date = new Date(post.created_at);
       meta.textContent = `Publicado: ${date.toLocaleString()} · Autor ID: ${post.author_id}`;
 
-      const bodyEl = document.createElement("div");
-      bodyEl.className = "post-body";
-      bodyEl.textContent = bodyText; // solo el texto limpio
+      const body = document.createElement("div");
+      body.className = "post-body";
 
-      div.appendChild(titleEl);
+      // limpiamos el body
+      let cleanBody = post.body
+        .replace(/```json/g, "")
+        .replace(/```/g, "")
+        .replace(/<p><code>json/g, "")
+        .replace(/"title":.*?[,}]/gs, "")
+        .replace(/"body":/g, "")
+        .replace(/^\s*{/g, "")
+        .replace(/}\s*$/g, "")
+        .trim();
+
+      // convertir saltos de línea a <br>
+      cleanBody = cleanBody.replace(/\n/g, "<br>");
+
+      body.innerHTML = cleanBody;
+
+      div.appendChild(title);
       div.appendChild(meta);
-      div.appendChild(bodyEl);
+      div.appendChild(body);
       postsContainer.appendChild(div);
     });
   } catch (err) {
