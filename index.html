@@ -1,10 +1,71 @@
 <!DOCTYPE html>
-<html>
+<html lang="es">
 <head>
-  <title>AI-BLOG Frontend</title>
+  <meta charset="UTF-8" />
+  <title>AI-Blog ✨</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>AI-BLOG está funcionando 😎</h1>
-  <p>Frontend temporal.</p>
+  <header>
+    <h1>AI-Blog ✨</h1>
+    <p>Genera artículos con IA y publícalos al instante.</p>
+  </header>
+
+  <main>
+    <!-- Auth -->
+    <section class="card">
+      <h2>Registro</h2>
+      <label>
+        Email
+        <input id="reg-email" type="email" placeholder="tu@email.com" />
+      </label>
+      <label>
+        Password
+        <input id="reg-password" type="password" placeholder="••••••••" />
+      </label>
+      <button id="btn-register">Registrarse</button>
+      <p class="msg" id="reg-msg"></p>
+    </section>
+
+    <section class="card">
+      <h2>Login</h2>
+      <label>
+        Email
+        <input id="login-email" type="email" placeholder="tu@email.com" />
+      </label>
+      <label>
+        Password
+        <input id="login-password" type="password" placeholder="••••••••" />
+      </label>
+      <button id="btn-login">Iniciar sesión</button>
+      <button id="btn-logout" class="secondary">Cerrar sesión</button>
+      <p class="msg" id="login-msg"></p>
+    </section>
+
+    <!-- Generate post (solo logueado) -->
+    <section class="card" id="generate-section" style="display: none;">
+      <h2>Generar nuevo artículo</h2>
+      <label>
+        Prompt para el artículo
+        <textarea id="prompt" rows="4" placeholder="Ej: Quiero un artículo sobre buenas prácticas en desarrollo backend con Python y FastAPI..."></textarea>
+      </label>
+      <button id="btn-generate">Generar artículo</button>
+      <p class="msg" id="gen-msg"></p>
+    </section>
+
+    <!-- Feed público -->
+    <section class="card">
+      <h2>Artículos publicados</h2>
+      <div id="posts-container">
+        <p>Cargando artículos...</p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Proyecto AI-Blog · Martín Ramírez</p>
+  </footer>
+
+  <script src="app.js"></script>
 </body>
 </html>
