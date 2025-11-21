@@ -87,9 +87,9 @@ async def generate_post(
 ):
     ai_result = await generate_blog_post(post_in.prompt)
 
-    title = ai_result.get("title", "Artículo generado")
-    body = ai_result.get("body", "")
-    seo_description = ai_result.get("seo_description", "")
+    title = ai_result.get("Titulo:", "Artículo generado")
+    body = ai_result.get("")
+    seo_description = ai_result.get("Resumen: ", "")
 
     post = models.Post(
         title=title,
