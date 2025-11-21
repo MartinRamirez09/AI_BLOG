@@ -18,8 +18,8 @@ app = FastAPI(
 
 # CORS – pon aquí tu URL de GitHub Pages
 origins = [
-    "https://tu-usuario.github.io",
-    "https://tu-usuario.github.io/tu-repo-frontend",
+    "https://github.com/MartinRamirez09",
+    "https://github.com/MartinRamirez09/AI_BLOG.git",
 ]
 
 app.add_middleware(
