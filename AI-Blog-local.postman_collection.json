@@ -1,0 +1,140 @@
+{
+  "info": {
+    "name": "AI-Blog Local",
+    "_postman_id": "d9fd7a4c-0000-0000-0000-aiblogmartin",
+    "description": "Colección para probar el backend AI-Blog en local (http://127.0.0.1:8000).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1 - Register",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123!\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "2 - Login (token)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "body": {
+          "mode": "urlencoded",
+          "urlencoded": [
+            {
+              "key": "username",
+              "value": "test@example.com",
+              "type": "text"
+            },
+            {
+              "key": "password",
+              "value": "Password123!",
+              "type": "text"
+            }
+          ]
+        },
+        "url": {
+          "raw": "{{base_url}}/token",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "token"
+          ]
+        }
+      },
+      "response": [],
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// Guarda el access_token en una variable de entorno de Postman",
+              "var data = pm.response.json();",
+              "pm.environment.set(\"access_token\", data.access_token);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3 - Generate Post (protegido)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{access_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"prompt\": \"Genera un artículo sobre la importancia de aprender FastAPI para desarrolladores backend principiantes.\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/generate-post",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "generate-post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "4 - List Posts (público)",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/posts",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "posts"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    }
+  ]
+}
