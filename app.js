@@ -1,6 +1,6 @@
 // app.js
 // CAMBIA esto si tu backend tiene otra URL
-const API_BASE_URL = "https://martinramirez09.github.io";
+const API_BASE_URL = "https://ai-blog-ogji.onrender.com";
 
 const regEmail = document.getElementById("reg-email");
 const regPassword = document.getElementById("reg-password");
